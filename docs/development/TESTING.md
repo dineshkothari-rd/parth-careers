@@ -25,18 +25,18 @@ git diff --check
 
 The production build is also a TypeScript/Next.js integration gate and must generate the expected routes without errors. The latest sandbox run reached Turbopack but was blocked by the environment from creating a process/binding a port (`Operation not permitted`); TypeScript and lint passed independently.
 
-### Supabase reconstruction and SQL security
+### Cloud schema and SQL security
 
 ```sh
-npx supabase db reset --local
-npx supabase test db --local supabase/tests
+# Local database reconstruction removed; validate migrations on a disposable cloud target.
+# Run the retained rollback SQL fixtures only on a reviewed disposable cloud target.
 ```
 
 The verified Phase 2 baseline is nine SQL files, nine tests, PASS. They use deterministic seed accounts and roll back synthetic changes. A fresh reset confirms the complete migration chain, including the private Resume Storage bucket and policies.
 
 ### Database release checks
 
-For schema work also review local/remote migration lists, run a production push dry run, and run relevant Supabase advisors. Do not automatically push.
+For schema work also review source/remote migration lists, run a production push dry run, and run relevant Supabase advisors. Do not automatically push.
 
 ## Browser/manual gaps
 

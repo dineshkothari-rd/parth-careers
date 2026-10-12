@@ -55,17 +55,15 @@ Detailed architecture: [docs/architecture/README.md](docs/architecture/README.md
 
 ## Getting started
 
-Prerequisites: Node.js 20+, npm, Docker, and the Supabase CLI available through `npx`.
+Prerequisites: Node.js20+ and npm. Use the existing free Supabase cloud project; no local Docker/database.
 
 ```sh
 npm ci
 cp .env.example .env.local
-npx supabase start
-npx supabase db reset --local
 npm run dev
 ```
 
-Resume upload depends on the private `resumes` Storage migration. It is reproducible locally; apply new migrations to the target project only after review. See [the Storage design](docs/design/resume-storage-reproducibility.md).
+Resume upload depends on the private `resumes` Storage migration. Verify the cloud bucket and apply new migrations only after review. See [the Storage design](docs/design/resume-storage-reproducibility.md).
 
 Full setup: [docs/development/SETUP.md](docs/development/SETUP.md).
 
@@ -77,7 +75,7 @@ Variable reference: [docs/development/ENVIRONMENT.md](docs/development/ENVIRONME
 
 ## Supabase setup
 
-Applied migrations are production-sensitive and must never be renamed, rewritten, deleted, or squashed. New schema work requires a new migration. Local reconstruction and the SQL security suite are part of the quality gate.
+Applied migrations are production-sensitive and must never be renamed, rewritten, deleted, or squashed. New schema work requires a new migration. SQL security acceptance uses a reviewed disposable cloud target; never reset the shared owner database.
 
 See [database architecture](docs/database/README.md) and [migration workflow](docs/development/MIGRATIONS.md).
 
@@ -88,7 +86,6 @@ npm run dev
 npm run lint
 npm run build
 node --test $(git ls-files | grep '.test.mjs')
-npx supabase test db --local supabase/tests
 git diff --check
 ```
 

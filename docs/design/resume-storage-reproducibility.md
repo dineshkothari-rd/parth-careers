@@ -45,7 +45,7 @@ Before implementing, confirm whether current SDK list or download calls exist. O
 ## Rollout
 
 1. Preserve the current 5 MiB byte limit in both client validation and bucket configuration.
-2. Apply the migration locally with `supabase db reset`.
+2. Validate the migration in a disposable cloud database; local resets are removed.
 3. Run database policy tests and manually upload and delete a PDF as two different test users.
 4. Apply to staging and verify existing objects remain private and accessible to their owners.
 5. Apply to production during a low-risk window; bucket creation and policies are additive and should not rewrite objects.

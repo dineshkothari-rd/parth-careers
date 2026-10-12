@@ -18,16 +18,16 @@ Migration history is production-sensitive. The current chain is synchronized thr
 3. Create the file with the Supabase CLI, for example `npx supabase migration new descriptive_name`.
 4. Add the smallest forward-only SQL change.
 5. Add/update SQL security tests for ownership, privileges, constraints, and privileged functions.
-6. Reconstruct locally:
+6. Use a reviewed disposable cloud database; no local runtime:
 
    ```sh
-   npx supabase db reset --local
+   # Local database reconstruction removed; validate migrations on a disposable cloud target.
    ```
 
 7. Run:
 
    ```sh
-   npx supabase test db --local supabase/tests
+   # Run the retained rollback SQL fixtures only on a reviewed disposable cloud target.
    ```
 
 8. Inspect migration list and diff. Run relevant advisors.

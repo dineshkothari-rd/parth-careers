@@ -11,7 +11,7 @@ Last verified: 2026-09-27
 
 ## Resume parses but upload fails
 
-The parser and Storage are separate steps. A fresh local reset creates the private `resumes` bucket and owner object policies; production still requires the pending Phase 2 migrations. Confirm the target project has those migrations before diagnosing uploads. Do not make the bucket public as a workaround.
+The parser and Storage are separate steps. Inspect the private `resumes` bucket and owner policies in the selected cloud project; validate migration history before changing anything. Confirm the target project has those migrations before diagnosing uploads. Do not make the bucket public as a workaround.
 
 ## Resume PDF has no readable text
 
@@ -35,7 +35,7 @@ Applications, application facts, manual jobs, interview rounds, practice, learni
 
 ## SQL tests require data
 
-Run `npx supabase db reset --local` first. `supabase/seed.sql` creates deterministic accounts/job/application used by security assertions. Ensure Docker/local Supabase is running.
+Use a reviewed disposable cloud database with the required synthetic fixtures. Never reset or seed the shared owner cloud database. Local Docker/Supabase startup was removed on12October2026.
 
 ## Next build or Node test module warnings
 
