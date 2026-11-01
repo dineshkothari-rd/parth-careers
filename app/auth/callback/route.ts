@@ -6,6 +6,7 @@ export async function GET(request: Request) {
   const requestUrl = new URL(request.url);
   const siteUrl = getSiteUrl(requestUrl.origin);
   const code = requestUrl.searchParams.get("code");
+  const flowId = requestUrl.searchParams.get("sb_flow_id");
   const authError = requestUrl.searchParams.get("error");
   const next = safeInternalPath(requestUrl.searchParams.get("next"));
   const requestedDestination = next && (next === "/auth/update-password" || !next.startsWith("/auth/")) ? next : "/dashboard";
@@ -17,7 +18,10 @@ export async function GET(request: Request) {
   if (code) {
     try {
       const supabase = await createClient();
-      const { data, error } = await supabase.auth.exchangeCodeForSession(code);
+      const { data, error } = await supabase.auth.exchangeCodeForSession(
+        code,
+        flowId === null ? undefined : { flowId },
+      );
       if (error || !data.user) throw error || new Error("Missing authenticated user.");
 
       if (requestedDestination === "/auth/update-password" || requestedDestination === "/recruiter") {
