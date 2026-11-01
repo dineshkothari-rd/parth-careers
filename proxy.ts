@@ -2,6 +2,12 @@ import { safeInternalPath } from "@/lib/site-url";
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 
+const LEGACY_CAREERS_HOSTS = new Set([
+  "jobpilot-murex.vercel.app",
+  "jobpilot-dineshkothari-rds-projects.vercel.app",
+  "jobpilot-git-main-dineshkothari-rds-projects.vercel.app",
+]);
+
 export async function proxy(request: NextRequest) {
   let response = NextResponse.next({ request });
   const pathname = request.nextUrl.pathname;
@@ -16,6 +22,23 @@ export async function proxy(request: NextRequest) {
   // Route handlers return their own predictable JSON authentication errors.
   if (pathname.startsWith("/api/") || pathname === "/reminder-sw.js")
     return response;
+
+  if (LEGACY_CAREERS_HOSTS.has(request.nextUrl.hostname) &&
+      (request.method === "GET" || request.method === "HEAD")) {
+    const target = new URL("https://parth-careers.vercel.app");
+    target.pathname = pathname;
+    target.search = request.nextUrl.search;
+    // An empty fragment stops browsers carrying old auth tokens across hosts.
+    target.hash = "#";
+    if (pathname.startsWith("/auth/") || request.nextUrl.searchParams.has("code")) {
+      // Auth cookies cannot cross hosts; restart instead of forwarding old codes.
+      const next = safeInternalPath(request.nextUrl.searchParams.get("next"));
+      target.pathname = "/auth/login";
+      target.search = "";
+      if (next && !next.startsWith("/auth/")) target.searchParams.set("next", next);
+    }
+    return NextResponse.redirect(target, 307);
+  }
 
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
